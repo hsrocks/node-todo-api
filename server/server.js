@@ -4,7 +4,7 @@ var {mongoose} =require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 var app = express();
-
+const {ObjectID} = require('mongodb');
 app.listen(3000,()=>{
   console.log("started on port 3000");
 })
@@ -34,4 +34,26 @@ app.get('/todos',(req,res)=>{
     res.status(400).send(err)
   })
 })
+
+app.get('/todos/:id',(req,res)=>{
+  var id = req.params.id;
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send();
+  }
+  else{
+    Todo.findById(id).then((todo)=>{
+      if(todo){
+      res.send({todo})
+    }
+    else {
+      res.status(404).send()
+    }
+    },(err)=>{
+      // send it using send() without any argument as error might contain the private information
+      // we dont want to expose to client
+      res.status(400).send();
+    })
+  }
+})
+// exported app for testing so to use this object and request for various GET /POST method
 module.exports ={app};
