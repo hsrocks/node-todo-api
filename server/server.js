@@ -5,8 +5,9 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 var app = express();
 const {ObjectID} = require('mongodb');
-app.listen(3000,()=>{
-  console.log("started on port 3000");
+const port= process.env.PORT || 3000;
+app.listen(port,()=>{
+  console.log("started on port",port);
 })
 // Parses the body data sent and convert into JS object
 // Its a middleware and the return result will be used in our routes
