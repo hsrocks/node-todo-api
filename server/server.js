@@ -89,7 +89,7 @@ app.patch('/todos/:id',(req,res)=>{
   // we will check if completed property is boolean and is true then we will update the completeAt property
   // to current time
   if(_.isBoolean(body.completed) && body.completed){
-      body.completeAt=new Date().getTime();
+      body.completedAt=new Date().getTime();
   }
   else {
     body.completed = false;

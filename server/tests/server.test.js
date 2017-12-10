@@ -8,7 +8,9 @@ const todos=[{
   text : "Hello"
 },{
   _id : new ObjectID(),
-  text : "Hi"
+  text : "Hi",
+  completed : true,
+  completedAt : 333
 }];
 
 beforeEach((done) =>{
@@ -148,4 +150,34 @@ describe("DELTE /todos/:id",()=>{
       }).catch((e)=>done(e));
     })
   });
+})
+
+describe('Patch todo/:id',()=>{
+  it('should update the Todo',(done)=>{
+      request(app).
+      patch(`/todos/${todos[0]._id.toHexString()}`).
+      send({text : 'Hey Bro',
+      completed : true
+    }).expect(200).
+    expect((res)=>{
+      expect(res.body.todo.text).toBe('Hey Bro');
+      expect(res.body.todo.completed).toBe(true);
+      expect(res.body.todo.completedAt).toBeA('number');
+    }).
+    end(done)
+  })
+
+  it('should clear completedAt when todo is not completed',(done)=>{
+    request(app).
+    patch(`/todos/${todos[1]._id.toHexString()}`).
+    send({text : 'Hey Bro',
+    completed : false
+  }).expect(200).
+  expect((res)=>{
+    expect(res.body.todo.text).toBe('Hey Bro');
+    expect(res.body.todo.completed).toBe(false);
+    expect(res.body.todo.completedAt).toNotExist();
+  }).
+  end(done)
+  })
 })
