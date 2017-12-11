@@ -8,9 +8,7 @@ const _ = require('lodash');
 var app = express();
 const {ObjectID} = require('mongodb');
 const port= process.env.PORT;
-app.listen(port,()=>{
-  console.log("started on port",port);
-})
+
 // Parses the body data sent and convert into JS object
 // Its a middleware and the return result will be used in our routes
 app.use(bodyParser.json());
@@ -114,14 +112,18 @@ app.patch('/todos/:id',(req,res)=>{
 
 app.post('/users',(req,res)=>{
   var body = _.pick(req.body,['email','password']);
-  var user=new User(
-    body
-  )
-  user.save().then((user)=>{
-    res.send(user);
-  },(err)=>{
+  var user=new User(body)
+
+  user.save().then(()=>{
+    return user.generateAuthToken();
+  }).then((token)=>{
+    res.header('x-auth',token).send(user);
+  }).catch((err)=>{
     res.status(400).send(err);
   })
 })
 // exported app for testing so to use this object and request for various GET /POST method
 module.exports ={app};
+app.listen(port,()=>{
+  console.log("started on port",port);
+})
