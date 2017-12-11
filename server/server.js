@@ -110,6 +110,18 @@ app.patch('/todos/:id',(req,res)=>{
   },(err)=>{
     res.status(400).send();
   })
+});
+
+app.post('/users',(req,res)=>{
+  var body = _.pick(req.body,['email','password']);
+  var user=new User(
+    body
+  )
+  user.save().then((user)=>{
+    res.send(user);
+  },(err)=>{
+    res.status(400).send(err);
+  })
 })
 // exported app for testing so to use this object and request for various GET /POST method
 module.exports ={app};
