@@ -8,7 +8,7 @@ const _ = require('lodash');
 var app = express();
 const {ObjectID} = require('mongodb');
 const port= process.env.PORT;
-
+var {authenticate} = require('./middleware/authenticate')
 // Parses the body data sent and convert into JS object
 // Its a middleware and the return result will be used in our routes
 app.use(bodyParser.json());
@@ -122,6 +122,29 @@ app.post('/users',(req,res)=>{
     res.status(400).send(err);
   })
 })
+
+// app.get('/users/me',(req,res)=>{
+//   var token = req.header('x-auth');
+//   User.findByToken(token).then((user)=>{
+//     if(!user){
+//         //res.status(401).send(); or do Promise.reject() and it will trigger the catch block
+//         return Promise.reject();
+//     }
+//
+//     else {
+//
+//       res.send(user);
+//     }
+//   }).catch((e)=>{
+//     res.status(401).send();
+//   })
+// })
+
+app.get('/users/me',authenticate,(req,res)=>{
+      // user is the property set by middleware in case user and token exist
+      res.send(req.user);
+})
+
 // exported app for testing so to use this object and request for various GET /POST method
 module.exports ={app};
 app.listen(port,()=>{
