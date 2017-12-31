@@ -155,6 +155,14 @@ app.post('/users/login',(req,res)=>{
     res.status(400).send();
   })
 })
+
+app.delete('/users/me/token',authenticate,(req,res)=>{
+  req.user.removeToken(req.token).then(()=>{
+    res.status(200).send()
+  },()=>{
+    res.status(400).send()
+  })
+})
 // exported app for testing so to use this object and request for various GET /POST method
 module.exports ={app};
 app.listen(port,()=>{
